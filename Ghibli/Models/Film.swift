@@ -8,7 +8,7 @@
 import Foundation
 import Playgrounds
 
-struct Film: Codable, Identifiable {
+struct Film: Codable, Equatable, Identifiable {
     let id: String
     let title: String
     let image: String
