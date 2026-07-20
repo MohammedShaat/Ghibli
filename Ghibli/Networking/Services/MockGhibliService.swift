@@ -8,7 +8,7 @@
 import Foundation
 
 struct MockGhibliService: GhibliService {
-    private struct SampleData: Codable {
+    private struct SampleData: Decodable {
         let films: [Film]
         let people: [Person]
     }
@@ -31,10 +31,21 @@ struct MockGhibliService: GhibliService {
     }
     
     func fetchFilms() async throws -> [Film] {
-        try fetchSampleData().films
+//        try fetchSampleData().films
+        
+        //MARK: For Preview
+        Film.samples
     }
     
     func fetchPerson(of id: String) async throws -> Person {
-        try fetchSampleData().people.first { $0.id == id }!
+        try fetchSampleData().people.randomElement()!
+    }
+    
+    //MARK: Just for Preview
+    func fetchFilm() -> Film {
+//        try! fetchSampleData().films.randomElement()!
+        
+        //MARK: For Preview
+        Film.samples.randomElement()!
     }
 }

@@ -8,6 +8,7 @@
 import Foundation
 
 struct ApiGhibliService: GhibliService {
+    
     private func fetch<T: Decodable>(from urlString: String) async throws -> T {
         guard let url = URL(string: urlString) else {
             throw APIError.invalidURL

@@ -8,9 +8,11 @@
 import Foundation
 import Playgrounds
 
-struct Film: Codable, Equatable, Identifiable {
+struct Film: Decodable, Equatable, Hashable, Identifiable {
     let id: String
     let title: String
+    let originalTitle: String
+    let originalTitleRomanised: String
     let image: String
     let movieBanner: String
     let description: String
@@ -27,16 +29,40 @@ struct Film: Codable, Equatable, Identifiable {
     
     enum CodingKeys: String, CodingKey {
         case id, title, image, description, director, producer, people, species, locations, vehicles, url
+        case origianlTitle = "original_title"
+        case originalTitleRomanised = "original_title_romanised"
         case releaseYear = "release_date"
         case movieBanner = "movie_banner"
         case duration = "running_time"
         case score = "rt_score"
     }
     
+    init(id: String, title: String, originalTitle: String, originalTitleRomanised: String, image: String, movieBanner: String, description: String, director: String, producer: String, releaseYear: Int, duration: Int, score: Int, people: [String], species: [String], locations: [String], vehicles: [String], url: String) {
+        self.id = id
+        self.title = title
+        self.originalTitle = originalTitle
+        self.originalTitleRomanised = originalTitleRomanised
+        self.image = image
+        self.movieBanner = movieBanner
+        self.description = description
+        self.director = director
+        self.producer = producer
+        self.releaseYear = releaseYear
+        self.duration = duration
+        self.score = score
+        self.people = people
+        self.species = species
+        self.locations = locations
+        self.vehicles = vehicles
+        self.url = url
+    }
+    
     init(from decoder: any Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         self.id = try container.decode(String.self, forKey: .id)
         self.title = try container.decode(String.self, forKey: .title)
+        self.originalTitle = try container.decode(String.self, forKey: .origianlTitle)
+        self.originalTitleRomanised = try container.decode(String.self, forKey: .originalTitleRomanised)
         self.image = try container.decode(String.self, forKey: .image)
         self.movieBanner = try container.decode(String.self, forKey: .movieBanner)
         self.description = try container.decode(String.self, forKey: .description)
