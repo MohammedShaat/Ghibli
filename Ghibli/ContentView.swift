@@ -10,15 +10,17 @@ import SwiftUI
 struct ContentView: View {
     let service: GhibliService
     @State private var filmsVM: FilmsViewModel
+    let storage: FavoritesStorage
+    @State private var favoritesVM: FavoritesViewModel
     
     var body: some View {
         TabView {
             Tab("Films", systemImage: "movieclapper") {
-                FilmsScreen(viewModel: filmsVM)
+                FilmsScreen(filmsviewModel: filmsVM, favoritesviewModel: favoritesVM)
             }
             
             Tab("Favorites", systemImage: "heart.fill") {
-                FavoritesScreen(viewModel: filmsVM)
+                FavoritesScreen(filmsViewModel: filmsVM, favoritesViewModel: favoritesVM)
             }
             
             Tab("Settings", systemImage: "gear") {
@@ -29,15 +31,26 @@ struct ContentView: View {
                 SearchScreen()
             }
         }
+        .task {
+            favoritesVM.load()
+            await filmsVM.getFilms()
+        }
     }
     
-    init(service: GhibliService = ApiGhibliService()) {
+    init(
+        service: GhibliService = ApiGhibliService(),
+        storage: FavoritesStorage = UserDefaultsFavoritesStorage()
+    ) {
         self.service = service
-        let vm = FilmsViewModel(service: service)
-        _filmsVM = State(initialValue: vm)
+        let filmsVM = FilmsViewModel(service: service)
+        _filmsVM = State(initialValue: filmsVM)
+        
+        self.storage = storage
+        let favoritesVM = FavoritesViewModel(storage: storage)
+        _favoritesVM = State(initialValue: favoritesVM)
     }
 }
 
 #Preview {
-    ContentView(service: MockGhibliService())
+    ContentView(service: MockGhibliService(), storage: MockFavoritesStorage())
 }

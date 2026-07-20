@@ -7,8 +7,9 @@
 
 import SwiftUI
 
-struct FilmView: View {
+struct FilmItemView: View {
     let film: Film
+    let favoritesViewModel: FavoritesViewModel
     
     var body: some View {
         HStack {
@@ -23,7 +24,9 @@ struct FilmView: View {
                     Text(film.title)
                         .font(.headline)
                     Spacer()
-                    Image(systemName: "heart")
+                    
+                    FavoriteButtonView(filmId: film.id, favoritesViewModel: favoritesViewModel)
+                        .buttonStyle(.borderless)
                 }
                 
                 VStack(alignment: .leading) {
@@ -41,10 +44,13 @@ struct FilmView: View {
 #Preview {
     let service = MockGhibliService()
     let film = service.fetchFilm()
+    let favoritesViewModel = FavoritesViewModel(storage: MockFavoritesStorage())
     
     NavigationStack {
         List {
-            FilmView(film: film)
+            FilmItemView(film: film, favoritesViewModel: favoritesViewModel)
+            
+            FilmItemView(film: film, favoritesViewModel: favoritesViewModel)
         }
     }
 }

@@ -17,12 +17,12 @@ class FilmDetailViewModel {
     }
     
     private let service: GhibliService
-    let film: Film
     private(set) var state: State = .idle
+    private let peopleIds: [String]
     
-    init(service: GhibliService, film: Film) {
+    init(service: GhibliService, people: [String]) {
         self.service = service
-        self.film = film
+        self.peopleIds = people
     }
     
     func getPeople() async {
@@ -46,7 +46,7 @@ class FilmDetailViewModel {
         var people = [Person]()
         
         return try await withThrowingTaskGroup(of: Person.self) { group in
-            for personUrlString in film.people {
+            for personUrlString in peopleIds {
                 try group.checkCancellation()
                 group.addTask {
                     print("Person")

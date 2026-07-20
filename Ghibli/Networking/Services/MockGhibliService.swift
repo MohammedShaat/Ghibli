@@ -31,10 +31,7 @@ struct MockGhibliService: GhibliService {
     }
     
     func fetchFilms() async throws -> [Film] {
-//        try fetchSampleData().films
-        
-        //MARK: For Preview
-        Film.samples
+        try fetchSampleData().films
     }
     
     func fetchPerson(of id: String) async throws -> Person {
@@ -43,9 +40,6 @@ struct MockGhibliService: GhibliService {
     
     //MARK: Just for Preview
     func fetchFilm() -> Film {
-//        try! fetchSampleData().films.randomElement()!
-        
-        //MARK: For Preview
-        Film.samples.randomElement()!
+        try! fetchSampleData().films.randomElement()!
     }
 }

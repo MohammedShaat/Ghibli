@@ -8,22 +8,25 @@
 import SwiftUI
 
 struct FilmDetailScreen: View {
-    @State private var viewModel: FilmDetailViewModel
+    let film: Film
+    let favoritesViewModel: FavoritesViewModel
+    
+    @State private var filmDetailVM: FilmDetailViewModel
     
     var body: some View {
         ScrollView {
             VStack(alignment: .leading) {
-                FilmImageView(urlString: viewModel.film.movieBanner)
+                FilmImageView(urlString: film.movieBanner)
                 
                 VStack(alignment: .leading) {
                     VStack(alignment: .leading) {
-                        Text(viewModel.film.title)
+                        Text(film.title)
                             .font(.title)
                         
                         HStack {
-                            Text(viewModel.film.originalTitle)
+                            Text(film.originalTitle)
                             
-                            Text(viewModel.film.originalTitleRomanised)
+                            Text(film.originalTitleRomanised)
                         }
                         .foregroundStyle(.secondary)
                     }
@@ -40,11 +43,11 @@ struct FilmDetailScreen: View {
                         .fontWeight(.semibold)
                         
                         VStack(alignment: .leading) {
-                            Text(viewModel.film.director)
-                            Text(viewModel.film.producer)
-                            Text(viewModel.film.releaseYear, format: .number)
-                            Text(viewModel.film.duration, format: .number)
-                            Text("\(viewModel.film.score)/100")
+                            Text(film.director)
+                            Text(film.producer)
+                            Text(film.releaseYear, format: .number)
+                            Text(film.duration, format: .number)
+                            Text("\(film.score)/100")
                         }
                     }
                     .padding(.top)
@@ -56,12 +59,12 @@ struct FilmDetailScreen: View {
                         Text("Description")
                             .font(.headline)
                         
-                        Text(viewModel.film.description)
+                        Text(film.description)
                     }
                     .padding(.top)
                     
                     Group {
-                        switch viewModel.state {
+                        switch filmDetailVM.state {
                         case .idle:
                             EmptyView()
                         case .loading:
@@ -80,15 +83,22 @@ struct FilmDetailScreen: View {
                 .padding(.horizontal)
             }
         }
-        .navigationTitle(viewModel.film.title)
+        .navigationTitle(film.title)
         .task {
-            await viewModel.getPeople()
+            await filmDetailVM.getPeople()
+        }
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                FavoriteButtonView(filmId: film.id, favoritesViewModel: favoritesViewModel)
+            }
         }
     }
     
-    init(service: GhibliService, film: Film) {
-        let viewModel = FilmDetailViewModel(service: service, film: film)
-        _viewModel = State(initialValue: viewModel)
+    init(service: GhibliService, film: Film, favoritesViewModel: FavoritesViewModel) {
+        self.film = film
+        let filmDetailVM = FilmDetailViewModel(service: service, people: film.people)
+        _filmDetailVM = State(initialValue: filmDetailVM)
+        self.favoritesViewModel = favoritesViewModel
     }
     
     func peopleView(_ people: [Person]) -> some View {
@@ -139,6 +149,6 @@ struct FilmDetailScreen: View {
     let film = service.fetchFilm()
     
     NavigationStack {
-        FilmDetailScreen(service: service, film: film)
+        FilmDetailScreen(service: service, film: film, favoritesViewModel: .sample)
     }
 }
