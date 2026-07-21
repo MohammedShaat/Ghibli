@@ -8,7 +8,6 @@
 import Foundation
 
 struct ApiGhibliService: GhibliService {
-    
     private func fetch<T: Decodable>(from urlString: String) async throws -> T {
         guard let url = URL(string: urlString) else {
             throw APIError.invalidURL
@@ -40,4 +39,11 @@ struct ApiGhibliService: GhibliService {
     func fetchPerson(of urlString: String) async throws -> Person {
         try await fetch(from: urlString)
     }
+    
+    func searchFilms(with query: String) async throws -> [Film] {
+        let allFilms = try await fetchFilms()
+        let matchedFilms = allFilms.filter { $0.title.localizedStandardContains(query) }
+        return matchedFilms
+    }
+    
 }

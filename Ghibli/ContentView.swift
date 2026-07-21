@@ -10,7 +10,6 @@ import SwiftUI
 struct ContentView: View {
     let service: GhibliService
     @State private var filmsVM: FilmsViewModel
-    let storage: FavoritesStorage
     @State private var favoritesVM: FavoritesViewModel
     
     var body: some View {
@@ -28,7 +27,7 @@ struct ContentView: View {
             }
             
             Tab(role: .search) {
-                SearchScreen()
+                SearchScreen(service: service, favoritesViewModel: favoritesVM)
             }
         }
         .task {
@@ -45,7 +44,6 @@ struct ContentView: View {
         let filmsVM = FilmsViewModel(service: service)
         _filmsVM = State(initialValue: filmsVM)
         
-        self.storage = storage
         let favoritesVM = FavoritesViewModel(storage: storage)
         _favoritesVM = State(initialValue: favoritesVM)
     }

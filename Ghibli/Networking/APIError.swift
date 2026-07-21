@@ -11,8 +11,8 @@ import Foundation
 enum APIError: LocalizedError {
     case invalidURL
     case badResponse
-    case decodingError(Error)
-    case networkError(Error)
+    case decodingError(DecodingError)
+    case networkError(URLError)
     
     var errorDescription: String? {
         switch self {

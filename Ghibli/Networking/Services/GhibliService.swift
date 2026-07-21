@@ -11,4 +11,6 @@ protocol GhibliService: Sendable {
     func fetchFilms() async throws -> [Film]
     
     func fetchPerson(of urlString: String) async throws -> Person
+    
+    func searchFilms(with query: String) async throws -> [Film]
 }
