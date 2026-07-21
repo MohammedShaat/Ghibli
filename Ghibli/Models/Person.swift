@@ -25,6 +25,18 @@ struct Person: Codable, Equatable, Identifiable {
         case hairColor = "hair_color"
     }
     
+    init(id: String, name: String, gender: String, age: Int, eyeColor: String, hairColor: String, films: [String], species: String, url: String) {
+        self.id = id
+        self.name = name
+        self.gender = gender
+        self.age = age
+        self.eyeColor = eyeColor
+        self.hairColor = hairColor
+        self.films = films
+        self.species = species
+        self.url = url
+    }
+    
     init(from decoder: any Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         self.id = try container.decode(String.self, forKey: .id)
